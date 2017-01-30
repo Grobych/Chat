@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
+
+
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.Label?>
+<TabPane prefHeight="640.0" prefWidth="480.0"  xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.71" fx:controller="sample.Controller">
+    <Tab fx:id="chatTab" text="Chat" disable="true">
+        <VBox alignment="center" >
+            <children>
+                <TableView fx:id="contactTable" >
+                    <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
+                    <columns>
+                        <TableColumn fx:id="tableNameColumn" text="Name"></TableColumn>
+                        <TableColumn fx:id="tableAddressColumn" text="Address"></TableColumn>
+                    </columns>
+                </TableView>
+                <TextArea fx:id="textArea" editable="false"></TextArea>
+                <TextField fx:id="inputTextField" onAction="#enterMessage"></TextField>
+            </children>
+        </VBox>
+    </Tab>
+    <Tab fx:id="logTab" text="Login">
+        <VBox alignment="center" >
+            <children>
+                <Label text="Enter name"></Label>
+                <TextField fx:id="inputNameField" onAction="#initialisation"></TextField>
+                <TextArea fx:id="logArea" editable="false"></TextArea>
+            </children>
+        </VBox>
+    </Tab>
+
+</TabPane>
