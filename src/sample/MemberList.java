@@ -14,18 +14,13 @@ public class MemberList {
         return members;
     }
 
-    public void setMembers(ObservableList<Member> members) {
-        this.members = members;
-    }
-
     public Member get(int index){
         return members.get(index);
     }
 
     public void add(Member member){
-        for (Member temp : members){
-            if (member.compareTo(temp)==0) return;
+        if (!members.contains(member)) {
+            members.add(member);
         }
-        members.add(member);
     }
 }
