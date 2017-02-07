@@ -28,7 +28,9 @@ public class ChatThread{
             receiveSocket = new DatagramSocket(port);
             receiveSocket.setSoTimeout(30000);
             sendSocket.setBroadcast(true);
+            isWorking = true;
             receive();
+
         } catch (SocketException e) {
             e.printStackTrace();
         }
@@ -54,19 +56,17 @@ public class ChatThread{
         new Thread() {
             public void run() {
                 while (true) {
+                    if (!isWorking)
+                        break;
                     try {
                         byte[] buf = new byte[1024];
-                        DatagramPacket packet = new DatagramPacket(buf,buf.length);
+                        DatagramPacket packet = new DatagramPacket(buf, buf.length);
                         receiveSocket.receive(packet);
                         String message = new String(buf);
                         System.out.println("Message: " + message);
                         MessageList.list.add(message);
                     } catch (Exception e) {
                         System.err.println(e.getMessage());
-                    }
-                    finally {
-                        if (!isWorking)
-                            break;
                     }
                 }
             }
