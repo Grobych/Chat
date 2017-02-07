@@ -23,6 +23,9 @@ public class MemberList {
     }
 
     public void add(Member member){
+        for (Member temp : members){
+            if (member.compareTo(temp)==0) return;
+        }
         members.add(member);
     }
 }

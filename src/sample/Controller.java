@@ -1,6 +1,7 @@
 package sample;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,6 +12,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.net.*;
 import java.util.ResourceBundle;
+import java.util.stream.Stream;
 
 public class Controller implements Initializable, Closeable {
     @FXML
@@ -29,6 +31,7 @@ public class Controller implements Initializable, Closeable {
     byte buffer[] = new byte[1024];
     MemberList memberList = new MemberList();
     MemberThread memberThread;
+    ChatThread chatThread;
 
     DatagramSocket socket;
     DatagramPacket inPacket, outPacket, memberPacket;
@@ -37,7 +40,7 @@ public class Controller implements Initializable, Closeable {
 
     @FXML
     public void enterMessage(){
-        textArea.setText(inputTextField.getText());
+        chatThread.sendMessage(inputTextField.getText());
         inputTextField.clear();
     }
 
@@ -56,10 +59,11 @@ public class Controller implements Initializable, Closeable {
         }
         addToLog("Username: "+user.getName());
         addToLog("Address:"+user.getAddress().toString());
-        addToLog("Creating DatagramSocket...");
-        createSocket();
+        chatTab.setDisable(false);
         addToLog("Start hello thread...");
         startHelloThread();
+        addToLog("Start chat thread...");
+        startChatThread();
     }
 
     @FXML
@@ -67,19 +71,9 @@ public class Controller implements Initializable, Closeable {
         logArea.setText(logArea.getText()+"\n"+msg);
     }
 
-    public void createSocket(){
-//        try {
-//            socket = new DatagramSocket();
-//            addToLog("Socket Created!");
-//        } catch (SocketException e) {
-//            addToLog("Creating Socket Error!");
-//            e.printStackTrace();
-//        }
-//
-//        inPacket = new DatagramPacket(buffer,buffer.length);
-//        inPacket.setPort(portChat);
-
-        chatTab.setDisable(false);
+    @FXML
+    public void addToChat(String msg){
+        textArea.setText(textArea.getText()+"\n"+msg);
     }
 
 
@@ -91,6 +85,27 @@ public class Controller implements Initializable, Closeable {
         contactTable.setItems(memberList.getMembers());
     }
 
+    public void chatInit(){
+        MessageList.list.addListener(new ListChangeListener<String>() {
+            @Override
+            public void onChanged(Change<? extends String> c) {
+                while (c.next()) {
+                    if (c.wasPermutated()) {
+                        for (int i = c.getFrom(); i < c.getTo(); ++i) {
+                            //permutate
+                        }
+                    } else if (c.wasUpdated()) {
+                        //update item
+                    } else {
+                        for (String additem : c.getAddedSubList()) {
+                            addToChat(additem);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
     public void startHelloThread(){
         memberThread = new MemberThread();
         memberThread.setPort(portMember);
@@ -98,9 +113,17 @@ public class Controller implements Initializable, Closeable {
         memberThread.run();
     }
 
+    public void startChatThread(){
+        chatThread = new ChatThread();
+        chatThread.setPort(portChat);
+        chatThread.setUser(memberList.get(0));
+        chatThread.run();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         tableInit();
+        chatInit();
     }
 
     @Override

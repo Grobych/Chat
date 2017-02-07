@@ -14,7 +14,7 @@ public class MemberThread {
     public static boolean isWorking;
 
     DatagramPacket inPacket, outPacket;
-    DatagramSocket socket;
+    DatagramSocket socket, receiveSocket;
     MemberList memberList;
     int port;
 
@@ -24,17 +24,18 @@ public class MemberThread {
     public void run() {
         isWorking=true;
         try {
-            socket = new DatagramSocket(port);
-            socket.connect(InetAddress.getByName("255.255.255.255"), port);
+            socket = new DatagramSocket();
+            receiveSocket = new DatagramSocket(port);
+            //socket.connect(InetAddress.getByName("255.255.255.255"), port);
             socket.setBroadcast(true);
+            receiveSocket.setBroadcast(true);
+            receiveSocket.setSoTimeout(10000);
             socket.setSoTimeout(10000);
             sending();
             listen();
         } catch (SocketException e) {
             System.out.println(e);
             //e.printStackTrace();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
         }
     }
 
@@ -55,7 +56,12 @@ public class MemberThread {
                 String hello = new String(user.getName()+" "+user.getAddress());
                 System.out.println(hello);
                 buffer = hello.getBytes();
-                DatagramPacket packet = new DatagramPacket(buffer,buffer.length);
+                DatagramPacket packet = null;
+                try {
+                    packet = new DatagramPacket(buffer,buffer.length, InetAddress.getByName("255.255.255.255"),port);
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
                 while (true){
                     try {
                         socket.send(packet);
@@ -75,21 +81,19 @@ public class MemberThread {
         System.out.println("Start listen");
         new Thread() {
             public void run() {
-                DatagramSocket socket = null;
-                try {
-                    socket = new DatagramSocket(port, InetAddress.getByName("0.0.0.0"));
-                } catch (SocketException e) {
-                    e.printStackTrace();
-                } catch (UnknownHostException e) {
-                    e.printStackTrace();
-                }
                 while (true) {
                     try {
                         byte[] buf = new byte[1024];
                         DatagramPacket packet = new DatagramPacket(buf,buf.length);
-                        socket.receive(packet);
+                        receiveSocket.receive(packet);
                         String message = new String(buf);
                         System.out.println("Recieved: " + message);
+                        String msg [] = message.trim().split("\\s+");
+                        String name = msg[0];
+                        String addr[] = msg[1].trim().split("/");
+                        String address = addr[1];
+                        System.out.println(name+" "+address);
+                        memberList.add(new Member(name,InetAddress.getByName(address)));
                         Thread.sleep(1000);
                     } catch (Exception e) {
                         System.err.println(e.getMessage());
