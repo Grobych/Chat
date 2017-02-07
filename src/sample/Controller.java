@@ -29,14 +29,14 @@ public class Controller implements Initializable, Closeable {
 
 
     byte buffer[] = new byte[1024];
-    MemberList memberList = new MemberList();
-    MemberThread memberThread;
-    ChatThread chatThread;
+    private MemberList memberList = new MemberList();
+    private MemberThread memberThread;
+    private ChatThread chatThread;
 
     DatagramSocket socket;
     DatagramPacket inPacket, outPacket, memberPacket;
-    int portChat = 9999;
-    int portMember = 10000;
+    private int portChat = 9999;
+    private int portMember = 10000;
 
     @FXML
     public void enterMessage(){

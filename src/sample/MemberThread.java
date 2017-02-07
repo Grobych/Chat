@@ -13,10 +13,12 @@ public class MemberThread {
 
     public static boolean isWorking;
 
-    DatagramPacket inPacket, outPacket;
-    DatagramSocket socket, receiveSocket;
-    MemberList memberList;
-    int port;
+    private DatagramPacket inPacket;
+    private DatagramPacket outPacket;
+    private DatagramSocket socket;
+    private DatagramSocket receiveSocket;
+    private MemberList memberList;
+    private int port;
 
     byte [] inBuffer = new byte[1024];
     byte [] outBuffer = new byte[1024];
