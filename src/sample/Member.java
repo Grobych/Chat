@@ -37,4 +37,22 @@ public class Member implements Comparable {
             return 0;
         else return 1;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Member member = (Member) o;
+
+        if (getName() != null ? !getName().equals(member.getName()) : member.getName() != null) return false;
+        return getAddress() != null ? getAddress().equals(member.getAddress()) : member.getAddress() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getName() != null ? getName().hashCode() : 0;
+        result = 31 * result + (getAddress() != null ? getAddress().hashCode() : 0);
+        return result;
+    }
 }
