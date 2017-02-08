@@ -77,9 +77,18 @@ public class Controller implements Initializable, Closeable {
     }
 
 
-
-    public void tableInit(){
+    public void tableInit() {
         contactTable.refresh();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true){
+                    contactTable.refresh();
+                }
+            }
+        }).start();
+
         tableNameColumn.setCellValueFactory(new PropertyValueFactory<Member,String>("Name"));
         tableAddressColumn.setCellValueFactory(new PropertyValueFactory<Member,String>("Address"));
         contactTable.setItems(memberList.getMembers());

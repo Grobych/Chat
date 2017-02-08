@@ -9,12 +9,17 @@ public class Member {
 
     private String name;
     private InetAddress address;
+    private long lastAcceptedEchoTime;
 
-    public Member(){}
+    public Member(){
+        lastAcceptedEchoTime = System.currentTimeMillis();
+    }
 
     public Member(String name, InetAddress address){
         this.name = name;
         this.address = address;
+
+        lastAcceptedEchoTime = System.currentTimeMillis();
     }
 
     public void setName(String name) {
@@ -31,6 +36,14 @@ public class Member {
 
     public InetAddress getAddress() {
         return address;
+    }
+
+    public long getLastAcceptedEchoTime() {
+        return lastAcceptedEchoTime;
+    }
+
+    public void setLastAcceptedEchoTime(long lastAcceptedEchoTime) {
+        this.lastAcceptedEchoTime = lastAcceptedEchoTime;
     }
 
     @Override
