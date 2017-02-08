@@ -85,6 +85,7 @@ public class Controller implements Initializable, Closeable {
             public void run() {
                 while (true){
                     contactTable.refresh();
+                    if (!MemberThread.isWorking) break;
                 }
             }
         }).start();

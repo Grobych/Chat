@@ -32,6 +32,7 @@ public class MemberList {
                             iterator.remove();
                         }
                     }
+                    if (!MemberThread.isWorking) break;
                 }
             }
         };
