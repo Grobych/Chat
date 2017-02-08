@@ -35,8 +35,8 @@ public class Controller implements Initializable, Closeable {
 
     DatagramSocket socket;
     DatagramPacket inPacket, outPacket, memberPacket;
-    private int portChat = 9999;
-    private int portMember = 10000;
+    private int portChat = 19999;
+    private int portMember = 20000;
 
     @FXML
     public synchronized void enterMessage(){

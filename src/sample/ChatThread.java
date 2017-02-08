@@ -9,7 +9,7 @@ import java.net.*;
 public class ChatThread{
     Member user;
     int port;
-    public boolean isWorking;
+    public static boolean isWorking;
     DatagramSocket sendSocket, receiveSocket;
     byte inBuffer[] = new byte[1024];
     byte outBuffer[] = new byte[1024];
@@ -26,7 +26,7 @@ public class ChatThread{
         try {
             sendSocket = new DatagramSocket();
             receiveSocket = new DatagramSocket(port);
-            receiveSocket.setSoTimeout(30000);
+            receiveSocket.setSoTimeout(10000);
             sendSocket.setBroadcast(true);
             isWorking = true;
             receive();
@@ -59,19 +59,28 @@ public class ChatThread{
                 while (true) {
 
                     try {
-                        if (!isWorking)
-                            return;
+
                         synchronized (this){
                             byte[] buf = new byte[1024];
                             DatagramPacket packet = new DatagramPacket(buf, buf.length);
                             receiveSocket.receive(packet);
                             String message = new String(buf);
+
                             System.out.println("Message: " + message);
-                            MessageList.list.add(message);
+                            String msg [] = message.trim().split("\\s+");
+                            String name = msg[0];
+                            if (!name.equals(user.getName()))
+                                MessageList.list.add(message);
                         }
 
                     } catch (Exception e) {
                         System.err.println(e.getMessage());
+                    }
+                    finally {
+                        if (!MemberThread.isWorking){
+                            System.out.println("Chat thread stop");
+                            break;
+                        }
                     }
                 }
             }
