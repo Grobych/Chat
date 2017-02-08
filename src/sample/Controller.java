@@ -39,7 +39,7 @@ public class Controller implements Initializable, Closeable {
     private int portMember = 10000;
 
     @FXML
-    public void enterMessage(){
+    public synchronized void enterMessage(){
         chatThread.sendMessage(inputTextField.getText());
         inputTextField.clear();
     }
@@ -72,7 +72,7 @@ public class Controller implements Initializable, Closeable {
     }
 
     @FXML
-    public void addToChat(String msg){
+    public synchronized void addToChat(String msg){
         textArea.setText(textArea.getText()+"\n"+msg);
     }
 
@@ -88,7 +88,7 @@ public class Controller implements Initializable, Closeable {
     public void chatInit(){
         MessageList.list.addListener(new ListChangeListener<String>() {
             @Override
-            public void onChanged(Change<? extends String> c) {
+            public synchronized void onChanged(Change<? extends String> c) {
                 while (c.next()) {
                     if (c.wasPermutated()) {
                         for (int i = c.getFrom(); i < c.getTo(); ++i) {
@@ -129,5 +129,6 @@ public class Controller implements Initializable, Closeable {
     @Override
     public void close() throws IOException {
         memberThread.isWorking = false;
+        chatThread.isWorking = false;
     }
 }

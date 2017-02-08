@@ -89,12 +89,12 @@ public class MemberThread {
                         DatagramPacket packet = new DatagramPacket(buf,buf.length);
                         receiveSocket.receive(packet);
                         String message = new String(buf);
-                        System.out.println("Recieved: " + message);
+                        //System.out.println("Recieved: " + message);
                         String msg [] = message.trim().split("\\s+");
                         String name = msg[0];
                         String addr[] = msg[1].trim().split("/");
                         String address = addr[1];
-                        System.out.println(name+" "+address);
+                        //System.out.println(name+" "+address);
                         memberList.add(new Member(name,InetAddress.getByName(address)));
                         Thread.sleep(1000);
                     } catch (Exception e) {

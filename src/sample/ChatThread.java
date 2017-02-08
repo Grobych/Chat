@@ -34,9 +34,10 @@ public class ChatThread{
         } catch (SocketException e) {
             e.printStackTrace();
         }
+
     }
 
-    public void sendMessage(String message){
+    public synchronized void sendMessage(String message){
         try {
             DatagramPacket packet = new DatagramPacket(outBuffer,outBuffer.length, InetAddress.getByName("255.255.255.255"),port);
             message = new String(user.getName()+" > "+ message);
@@ -56,15 +57,19 @@ public class ChatThread{
         new Thread() {
             public void run() {
                 while (true) {
-                    if (!isWorking)
-                        break;
+
                     try {
-                        byte[] buf = new byte[1024];
-                        DatagramPacket packet = new DatagramPacket(buf, buf.length);
-                        receiveSocket.receive(packet);
-                        String message = new String(buf);
-                        System.out.println("Message: " + message);
-                        MessageList.list.add(message);
+                        if (!isWorking)
+                            return;
+                        synchronized (this){
+                            byte[] buf = new byte[1024];
+                            DatagramPacket packet = new DatagramPacket(buf, buf.length);
+                            receiveSocket.receive(packet);
+                            String message = new String(buf);
+                            System.out.println("Message: " + message);
+                            MessageList.list.add(message);
+                        }
+
                     } catch (Exception e) {
                         System.err.println(e.getMessage());
                     }
