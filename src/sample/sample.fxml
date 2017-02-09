@@ -34,7 +34,7 @@
                 <Label text="Enter name" />
                 <TextField fx:id="inputNameField" onAction="#initialisation" />
                 <TextArea fx:id="logArea" editable="false" />
-            <ChoiceBox value="255.255.255.255">
+            <ChoiceBox fx:id="choiceBox" value="255.255.255.255">
                 <items>
                     <FXCollections fx:factory="observableArrayList">
                         <String fx:value="255.255.255.255" />

@@ -25,6 +25,8 @@ public class Controller implements Initializable, Closeable {
     TextField inputTextField, inputNameField;
     @FXML
     Tab logTab, chatTab;
+    @FXML
+    ChoiceBox choiceBox;
 
 
 
@@ -32,6 +34,7 @@ public class Controller implements Initializable, Closeable {
     private MemberList memberList = new MemberList();
     private MemberThread memberThread;
     private ChatThread chatThread;
+    private MulticastChatThread multicastChatThread;
 
     DatagramSocket socket;
     DatagramPacket inPacket, outPacket, memberPacket;
@@ -59,11 +62,18 @@ public class Controller implements Initializable, Closeable {
         }
         addToLog("Username: "+user.getName());
         addToLog("Address:"+user.getAddress().toString());
-        chatTab.setDisable(false);
-        addToLog("Start hello thread...");
-        startHelloThread();
-        addToLog("Start chat thread...");
-        startChatThread();
+
+        try {
+            addToLog("Start hello thread...");
+            startHelloThread();
+            addToLog("Start chat thread...");
+            startChatThread();
+            chatTab.setDisable(false);
+            choiceBox.setDisable(true);
+        }catch (BindException e){
+            System.out.println(e.getMessage());
+        }
+
     }
 
     @FXML
@@ -116,19 +126,38 @@ public class Controller implements Initializable, Closeable {
         });
     }
 
-    public void startHelloThread(){
+    public void startHelloThread() throws BindException{
         memberThread = new MemberThread();
         memberThread.setPort(portMember);
         memberThread.setMemberList(memberList);
         memberThread.run();
     }
 
-    public void startChatThread(){
-        chatThread = new ChatThread();
-        chatThread.setPort(portChat);
-        chatThread.setUser(memberList.get(0));
-        chatThread.run();
+    public void startChatThread() throws BindException{
+        switch (choiceBox.getValue().toString())
+        {
+            case "255.255.255.255":
+            {
+                addToLog("Broadcast mode");
+                chatThread = new ChatThread();
+                chatThread.setPort(portChat);
+                chatThread.setUser(memberList.get(0));
+                chatThread.run();
+                break;
+            }
+            case "224.5.6.7":
+            {
+                addToLog("Multicast mode");
+                multicastChatThread = new MulticastChatThread();
+                multicastChatThread.setPort(portChat);
+                multicastChatThread.setUser(memberList.get(0));
+                multicastChatThread.run();
+                break;
+            }
+        }
+
     }
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
