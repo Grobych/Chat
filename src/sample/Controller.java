@@ -1,5 +1,7 @@
 package sample;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -43,7 +45,10 @@ public class Controller implements Initializable, Closeable {
 
     @FXML
     public synchronized void enterMessage(){
-        chatThread.sendMessage(inputTextField.getText());
+        switch (choiceBox.getValue().toString()){
+            case "255.255.255.255": chatThread.sendMessage(inputTextField.getText()); break;
+            case "224.0.0.50" :      multicastChatThread.sendMessage(inputTextField.getText()); break;
+        }
         inputTextField.clear();
     }
 
@@ -71,6 +76,7 @@ public class Controller implements Initializable, Closeable {
             chatTab.setDisable(false);
             choiceBox.setDisable(true);
         }catch (BindException e){
+            addToLog("Bind fail");
             System.out.println(e.getMessage());
         }
 
@@ -83,7 +89,7 @@ public class Controller implements Initializable, Closeable {
 
     @FXML
     public synchronized void addToChat(String msg){
-        textArea.setText(textArea.getText()+"\n"+msg);
+        textArea.appendText("\n"+msg);
     }
 
 
@@ -145,7 +151,7 @@ public class Controller implements Initializable, Closeable {
                 chatThread.run();
                 break;
             }
-            case "224.5.6.7":
+            case "224.0.0.50":
             {
                 addToLog("Multicast mode");
                 multicastChatThread = new MulticastChatThread();
@@ -164,6 +170,17 @@ public class Controller implements Initializable, Closeable {
         tableInit();
         chatInit();
     }
+
+//    @FXML
+//    public void textAreaInit(){
+//        textArea.textProperty().addListener(new ChangeListener<String>() {
+//            @Override
+//            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+//
+//            }
+//        });
+//     }
+
 
     @Override
     public void close() throws IOException {

@@ -29,7 +29,7 @@ public class MulticastChatThread {
             sendSocket = new MulticastSocket();
             receiveSocket = new MulticastSocket(port);
             receiveSocket.setSoTimeout(10000);
-            group = InetAddress.getByName("228.5.6.7");
+            group = InetAddress.getByName("224.0.0.50");
             sendSocket.joinGroup(group);
             receiveSocket.joinGroup(group);
             isWorking = true;

@@ -23,7 +23,7 @@
                         <TableColumn fx:id="tableAddressColumn" text="Address" />
                     </columns>
                 </TableView>
-                <TextArea fx:id="textArea" editable="false" />
+                <TextArea fx:id="textArea" editable="false"  />
                 <TextField fx:id="inputTextField" onAction="#enterMessage" />
             </children>
         </VBox>
@@ -38,7 +38,7 @@
                 <items>
                     <FXCollections fx:factory="observableArrayList">
                         <String fx:value="255.255.255.255" />
-                        <String fx:value="224.5.6.7" />
+                        <String fx:value="224.0.0.50" />
                     </FXCollections>
                 </items>
                 </ChoiceBox>
